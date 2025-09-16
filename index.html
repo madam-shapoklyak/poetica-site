@@ -1,31 +1,68 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creative studio "Madam in Shapoklyak"</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Poetica.site — Мадам Шапокляк</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #fdfaf6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #e0d6cc;
+      padding: 20px;
+      text-align: center;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    nav a {
+      text-decoration: none;
+      color: #5a3e36;
+      font-weight: bold;
+    }
+    main {
+      padding: 40px;
+      text-align: center;
+    }
+    footer {
+      background-color: #e0d6cc;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Creative studio "мадам в Шапокляк"</h1>
+    <h1>Poetica.site</h1>
+    <p>поэтическая платформа Мадам Шапокляк</p>
     <nav>
-      <a href="poems/autumn.html">Осень</a>
-      <a href="poems/memory.html">Память</a>
+      <ul>
+        <li><a href="стихи.html">СТИХИ</a></li>
+        <li><a href="проза.html">ПРОЗА</a></li>
+        <li><a href="ауди.html">АУДИ</a></li>
+        <li><a href="видео.html">ВИДЕО</a></li>
+      </ul>
     </nav>
   </header>
+
   <main>
-    <section>
-      <h2>Добро пожаловать</h2>
-      <p>Здесь живёт поэзия, визуал и голос. Платформа открыта 24/7.</p>
-    </section>
-    <section class="gallery">
-      <img src="images/cover-autumn.jpg" alt="Обложка Осень" />
-      <img src="images/cover-memory.jpg" alt="Обложка Память" />
-    </section>
+    <h2>Добро пожаловать</h2>
+    <p>Здесь рождаются тексты, звучат голоса, оживают образы.  
+    Платформа для публикации, вдохновения и цифрового присутствия поэзии.</p>
   </main>
+
   <footer>
-    <p>&copy; 2025г. Архитектура и стиль — Creative studio "мадам в Шапокляк".</p>
+    <p>&copy; 2025 Мадам Шапокляк — Poetica.site</p>
   </footer>
 </body>
 </html>
