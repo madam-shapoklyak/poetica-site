@@ -2,12 +2,43 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>СТИХИ — Poetica</title>
+  <title>СТИХИ — Poetica.site</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .collection {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      background-color: #f9f4ef;
+      border-radius: 8px;
+    }
+    .collection img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .collection h3 {
+      margin-top: 0;
+      color: #5a3e36;
+    }
+    .collection a {
+      display: inline-block;
+      margin-top: 10px;
+      color: #5a3e36;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>СТИХИ</h1>
+    <div class="logo-title">
+      <img src="images/logo.png" alt="Логотип Poetica" style="height: 60px;">
+      <div>
+        <h1>Poetica.site</h1>
+        <p>поэтическая платформа Мадам Шапокляк</p>
+      </div>
+    </div>
     <nav>
       <ul>
         <li><a href="index.html">ГЛАВНАЯ</a></li>
@@ -20,20 +51,42 @@
   </header>
 
   <main>
-    <section>
-      <h2>Сборники</h2>
-      <p>Здесь будут размещены поэтические подборки, визуальные обложки и ссылки на страницы стихов.</p>
-      <!-- Пример карточки сборника -->
-      <div class="collection">
-        <h3>Осенние линии</h3>
-        <p>Сборник о памяти, ветре и голосах улиц.</p>
-        <a href="#">Читать сборник</a>
-      </div>
-    </section>
+    <h2>Поэтические сборники</h2>
+    <p>Здесь публикуются авторские книги, черновики, поэтапные издания и тексты друзей. Каждая строка — часть живой мозаики.</p>
+
+    <div class="collection">
+      <h3>Мозаика букв</h3>
+      <p>Первый сборник. Поэтический дебют, где каждая буква — фрагмент внутреннего мира.</p>
+      <a href="#">Читать сборник</a>
+    </div>
+
+    <div class="collection">
+      <h3>Женщина с прошлым</h3>
+      <p>Второй сборник. Лирика, память, голос, который не боится быть услышанным.</p>
+      <a href="#">Читать сборник</a>
+    </div>
+
+    <div class="collection">
+      <h3>Третий сборник (в печати)</h3>
+      <p>Скоро появится. Название в процессе, но тексты уже живут своей жизнью.</p>
+      <a href="#">Предпросмотр</a>
+    </div>
+
+    <div class="collection">
+      <h3>Четвёртая книга (в разработке)</h3>
+      <p>Публикуется поэтапно. Здесь будут появляться главы, пока не соберётся полное издание.</p>
+      <a href="#">Читать главы</a>
+    </div>
+
+    <div class="collection">
+      <h3>Стихи друзей</h3>
+      <p>Площадка для поэтических голосов, которым ты даёшь пространство. Здесь будут публиковаться тексты твоих друзей.</p>
+      <a href="#">Открыть подборку</a>
+    </div>
   </main>
 
   <footer>
-    <p>&copy; 2025 Poetica.site</p>
+    <p>&copy; 2025 Мадам Шапокляк — Poetica.site</p>
   </footer>
 </body>
 </html>
