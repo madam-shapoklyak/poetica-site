@@ -17,12 +17,24 @@
       padding: 20px;
       text-align: center;
     }
+    .logo-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo-title img {
+      height: 70px;
+      border-radius: 8px;
+    }
     nav ul {
       list-style: none;
       padding: 0;
       display: flex;
       justify-content: center;
       gap: 20px;
+      margin-top: 20px;
     }
     nav a {
       text-decoration: none;
@@ -43,11 +55,13 @@
 </head>
 <body>
   <header>
- <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-    <img src="logo.png" alt="Логотип Poetica" style="height: 60px;">
+    <div class="logo-title">
+      <img src="Изображения/logo.png" alt="Логотип Poetica">
     <div>
     <h1>ТВОРЧЕСКАЯ СТУДИЯ "СТАРЫЙ ЧЕМОДАНЧИК"</h1>
     <p>творческая студия мадам в Шапокляк</p>
+ </div>
+    </div>
     <nav>
       <ul>
         <li><a href="стихи.html">СТИХИ</a></li>
@@ -63,10 +77,11 @@
     <p>Здесь рождаются тексты, звучат голоса, оживают образы.  
     Платформа для публикации, вдохновения и цифрового присутствия поэзии.</p>
   </main>
-
+  
   <footer>
     <p>&copy; 2025 Мадам Шапокляк — ТС Старый чемоданчик</p>
   </footer>
 </body>
 </html>
+
 
