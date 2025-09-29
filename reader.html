@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Чтение раздела</title>
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     body { display: flex; margin: 0; font-family: sans-serif; background-color: #f9f4ef; }
     .sidebar, .content, .media { padding: 20px; height: 100vh; overflow-y: auto; }
@@ -28,71 +29,88 @@
     const book = params.get("book");
     const section = params.get("section");
 
-    const docxPath = `СТИХИ/${book}/${section}/${section.split(" ")[1].toLowerCase()}.docx`;
-
-    fetch(docxPath)
-      .then(response => response.arrayBuffer())
-      .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
-      .then(result => {
-        const html = result.value;
-        const poems = html.split("<p>").filter(p => p.trim().length > 0);
-
-        document.getElementById("sidebar").innerHTML = `
-          <img src="Изображения/${book.toLowerCase().replace(/ /g,"-")}-cover.jpg" style="width:100%; border-radius:6px;">
-          <h2>${section}</h2>
-          <ul class="poem-list">
-            ${poems.map((p, i) => `<li onclick="showPoem(${i})">${extractTitle(p)}</li>`).join("")}
-          </ul>
-        `;
-
-        document.getElementById("content").innerHTML = `
-          <img src="Изображения/${section.toLowerCase().replace(/ /g,"-")}-illustration.jpg" class="section-image">
-          <div id="poem-text"><p class="placeholder">Выберите стих из списка слева</p></div>
-        `;
-
-        document.getElementById("media").innerHTML = `
-          <div id="audio-block"><p class="placeholder">АУДИО ФАЙЛ ОТСУТСТВУЕТ</p></div>
-          <div id="video-block"><p class="placeholder">ВИДЕО ФАЙЛ ОТСУТСТВУЕТ</p></div>
-        `;
-
-        window.showPoem = function(index) {
-          const poemHtml = poems[index];
-          const title = extractTitle(poemHtml);
-          document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><p>${stripTags(poemHtml)}</p>`;
-
-          const audioPath = `audio/${title}.mp3`;
-          const videoPath = `video/${title}.mp4`;
-
-          checkMedia(audioPath, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
-          checkMedia(videoPath, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
-        };
-
-        function extractTitle(html) {
-          return html.replace(/<[^>]+>/g, "").split("\n")[0].trim();
+    fetch("library.json")
+      .then(res => res.json())
+      .then(library => {
+        const docPath = library[book]?.sections?.[section];
+        if (!docPath) {
+          document.body.innerHTML = `<p style="padding:40px;">Раздел не найден в библиотеке.</p>`;
+          return;
         }
 
-        function stripTags(html) {
-          return html.replace(/<[^>]+>/g, "").trim();
-        }
+        fetch(docPath)
+          .then(response => response.arrayBuffer())
+          .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
+          .then(result => {
+            const html = result.value;
+            const poems = html.split("<p>").filter(p => p.trim().length > 0);
 
-        function checkMedia(path, blockId, fallback, type) {
-          fetch(path).then(res => {
-            if (res.ok) {
-              document.getElementById(blockId).innerHTML =
-                type === "audio" ? `<audio controls src="${path}"></audio>` :
-                `<video controls src="${path}"></video>`;
-            } else {
-              document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
+            const coverPath = `images/${book.toLowerCase().replace(/ /g,"-")}-cover.jpg`;
+            const illustrationPath = `images/${section.toLowerCase().replace(/ /g,"-")}-illustration.jpg`;
+
+            document.getElementById("sidebar").innerHTML = `
+              <img src="${coverPath}" style="width:100%; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
+              <h2>${section}</h2>
+              <ul class="poem-list">
+                ${poems.map((p, i) => `<li onclick="showPoem(${i})">${extractTitle(p)}</li>`).join("")}
+              </ul>
+            `;
+
+            document.getElementById("content").innerHTML = `
+              <img src="${illustrationPath}" class="section-image" onerror="this.style.display='none'">
+              <div id="poem-text"><p class="placeholder">Выберите стих из списка слева</p></div>
+            `;
+
+            document.getElementById("media").innerHTML = `
+              <div id="audio-block"><p class="placeholder">АУДИО ФАЙЛ ОТСУТСТВУЕТ</p></div>
+              <div id="video-block"><p class="placeholder">ВИДЕО ФАЙЛ ОТСУТСТВУЕТ</p></div>
+            `;
+
+            window.showPoem = function(index) {
+              const poemHtml = poems[index];
+              const title = normalizeTitle(extractTitle(poemHtml));
+              document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><p>${stripTags(poemHtml)}</p>`;
+
+              const audioPath = `audio/${title}.mp3`;
+              const videoPath = `video/${title}.mp4`;
+
+              checkMedia(audioPath, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
+              checkMedia(videoPath, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
+            };
+
+            function extractTitle(html) {
+              return html.replace(/<[^>]+>/g, "").split("\n")[0].trim();
             }
-          }).catch(() => {
-            document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
+
+            function normalizeTitle(title) {
+              return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
+            }
+
+            function stripTags(html) {
+              return html.replace(/<[^>]+>/g, "").trim();
+            }
+
+            function checkMedia(path, blockId, fallback, type) {
+              fetch(path).then(res => {
+                if (res.ok) {
+                  document.getElementById(blockId).innerHTML =
+                    type === "audio" ? `<audio controls src="${path}"></audio>` :
+                    `<video controls src="${path}"></video>`;
+                } else {
+                  document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
+                }
+              }).catch(() => {
+                document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
+              });
+            }
+          })
+          .catch(err => {
+            document.body.innerHTML = `<p style="padding:40px;">Ошибка загрузки файла: ${err.message}</p>`;
           });
-        }
       })
-      .catch(err => {
-        document.body.innerHTML = `<p style="padding:40px;">Ошибка загрузки файла: ${err.message}</p>`;
+      .catch(() => {
+        document.body.innerHTML = `<p style="padding:40px;">Не удалось загрузить библиотеку.</p>`;
       });
   </script>
 
 </body>
-</html>
