@@ -36,16 +36,16 @@
       .then(res => res.json())
       .then(library => {
         console.log("library keys:", Object.keys(library));
-        console.log("sections in book:", Object.keys(library[book]?.sections || {}));
+console.log("sections in book:", Object.keys((library[book] && library[book].sections) || {}));
 
-        let docPath = null;
-        for (const key of Object.keys(library[book]?.sections || {})) {
-          console.log(`Сравнение: "${key}" === "${section}" →`, key === section);
-          if (key.trim() === section) {
-            docPath = library[book].sections[key];
-            break;
-          }
-        }
+let docPath = null;
+for (const key of Object.keys((library[book] && library[book].sections) || {})) {
+  console.log(`Сравнение: "${key}" === "${section}" →`, key === section);
+  if (key.trim() === section) {
+    docPath = library[book].sections[key];
+    break;
+  }
+}
 
         console.log("docPath:", docPath);
 
