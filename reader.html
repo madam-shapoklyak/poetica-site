@@ -29,10 +29,18 @@
     const book = params.get("book");
     const section = params.get("section");
 
+    console.log("book:", book);
+    console.log("section:", section);
+
     fetch("library.json")
       .then(res => res.json())
       .then(library => {
-        const docPath = library[book]?.sections?.[section];
+    console.log("library keys:", Object.keys(library));
+    console.log("sections in book:", Object.keys(library[book]?.sections ||
+
+    const docPath = library[book]?.sections?.[section];
+    console.log("docPath:", docPath);
+
         if (!docPath) {
           document.body.innerHTML = `<p style="padding:40px;">Раздел не найден в библиотеке.</p>`;
           return;
