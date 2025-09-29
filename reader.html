@@ -32,7 +32,7 @@
 
     if (!book || !section) {
       document.body.innerHTML = `<p style="padding:40px;">Пожалуйста, выберите сборник и раздел в URL.<br><br>
-      Пример: <code>?book=МОЗАИКА БУКВ&section=3 СЕГОДНЯ БЫЛА ВОЙНА</code></p>`;
+      Пример: <code>?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ</code></p>`;
     } else {
       fetch("library.json")
         .then(res => res.json())
@@ -49,11 +49,11 @@
             .then(result => {
               const blocks = result.value.split("***").map(b => b.trim()).filter(b => b.length > 0);
 
-              const coverPath = `images/${book.toLowerCase().replace(/ /g,"-")}-cover.jpg`;
-              const illustrationPath = `images/${section.toLowerCase().replace(/ /g,"-")}-illustration.jpg`;
+              const coverPath = `images/${normalizeTitle(book)}.jpg`;
+              const illustrationPath = `images/${normalizeTitle(section)}-illustration.jpg`;
 
               document.getElementById("sidebar").innerHTML = `
-                <img src="${coverPath}" style="width:100%; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
+                <img src="${coverPath}" style="max-width:200px; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
                 <h2>${section}</h2>
                 <ul class="poem-list">
                   ${blocks.map((b, i) => `<li onclick="showPoem(${i})">${extractTitle(b)}</li>`).join("")}
@@ -80,14 +80,11 @@
                 checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
               };
 
-     function extractTitle(text) {
-  const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-
-  // Удаляем строки, заключённые в двойные слэши: //...//
-  const filtered = lines.filter(line => !/^\/.*\/$/.test(line));
-
-  return filtered[0] || "Без названия";
-}
+              function extractTitle(text) {
+                const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+                const filtered = lines.filter(line => !/^\/.*\/$/.test(line));
+                return filtered[0] || "Без названия";
+              }
 
               function normalizeTitle(title) {
                 return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
