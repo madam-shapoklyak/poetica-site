@@ -6,8 +6,32 @@
   <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
-    body { display: flex; margin: 0; font-family: sans-serif; background-color: #f9f4ef; }
-    .sidebar, .content, .media { padding: 20px; height: 100vh; overflow-y: auto; }
+    body { margin: 0; font-family: sans-serif; background-color: #f9f4ef; }
+    header {
+      background-color: #e8dfd1;
+      padding: 20px 0;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #5a3e36;
+    }
+    nav {
+      margin-top: 10px;
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #5a3e36;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .main { display: flex; height: calc(100vh - 120px); }
+    .sidebar, .content, .media { padding: 20px; overflow-y: auto; }
     .sidebar { width: 25%; background-color: #fff8f0; border-right: 1px solid #ccc; }
     .content { width: 50%; text-align: center; }
     .media { width: 25%; background-color: #fff8f0; border-left: 1px solid #ccc; }
@@ -21,9 +45,22 @@
 </head>
 <body>
 
-  <div class="sidebar" id="sidebar"></div>
-  <div class="content" id="content"></div>
-  <div class="media" id="media"></div>
+  <header>
+    <h1>ТВОРЧЕСКАЯ СТУДИЯ "СТАРЫЙ ЧЕМОДАНЧИК"</h1>
+    <nav>
+      <a href="index.html">ГЛАВНАЯ</a>
+      <a href="poetry.html">СТИХИ</a>
+      <a href="prose.html">ПРОЗА</a>
+      <a href="audio.html">АУДИО</a>
+      <a href="video.html">ВИДЕО</a>
+    </nav>
+  </header>
+
+  <div class="main">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="content" id="content"></div>
+    <div class="media" id="media"></div>
+  </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
