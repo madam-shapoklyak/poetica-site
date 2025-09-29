@@ -80,11 +80,11 @@
                 checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
               };
 
-            function extractTitle(text) {
+     function extractTitle(text) {
   const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
 
-  // Удаляем строки, которые выглядят как дата: /дд. мм. гггг./
-  const filtered = lines.filter(line => !/^\/\d{1,2}\.\s?\d{1,2}\.\s?\d{4}\.?\/$/.test(line));
+  // Удаляем строки, заключённые в двойные слэши: //...//
+  const filtered = lines.filter(line => !/^\/.*\/$/.test(line));
 
   return filtered[0] || "Без названия";
 }
