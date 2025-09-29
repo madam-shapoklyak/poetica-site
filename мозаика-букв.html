@@ -2,12 +2,59 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Мозаика букв — Poetica-сайт</title>
+  <title>Стихи — Poetica-сайт</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #f9f4ef;
+    }
+    main {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .collection {
+      margin-bottom: 40px;
+      padding: 20px;
+      background-color: #fff8f0;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .collection img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      padding: 20px;
+      margin: 0;
+      background-color: #eae2d6;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #5a3e36;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #eae2d6;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Poetica-сайт</h1>
+    <h1 style="padding: 20px;">Poetica-сайт</h1>
     <nav>
       <ul>
         <li><a href="index.html">ГЛАВНАЯ</a></li>
@@ -20,29 +67,44 @@
   </header>
 
   <main>
-    <h2>Сборник «Мозаика букв»</h2>
-    <img src="Изображения/mosaic-cover.jpg" alt="Обложка сборника Мозаика букв" style="max-width:100%; border-radius:6px; margin-bottom:20px;">
-    <p>Поэтический дебют, где каждая буква — фрагмент внутреннего мира. Сборник доступен в печатной версии. В будущем планируется дополнение аудио и визуальными материалами для каждого раздела.</p>
+    <h2>Поэтические сборники</h2>
+    <p>Здесь публикуются авторские книги, черновики, поэтапные издания и тексты друзей. Каждая строка — часть живой мозаики.</p>
 
-    <div class="section">
-      <h3>1. КАЛЕНДАРЬ</h3>
-      <img src="Изображения/calendar-illustration.jpg" alt="Иллюстрация к разделу КАЛЕНДАРЬ" style="max-width:100%; border-radius:6px;">
-      <p>Поэтические заметки времени, ритма, памяти. Здесь строки идут как дни, а паузы — как дыхание между событиями.</p>
-      <a href="reader.html?book=МОЗАИКА БУКВ&section=1 КАЛЕНДАРЬ">Читать раздел</a>
+    <div class="collection">
+      <h3>Мозаика букв</h3>
+      <img src="Изображения/mosaic-cover.jpg" alt="Обложка сборника Мозаика букв">
+      <p>Поэтический дебют, где каждая буква — фрагмент внутреннего мира.</p>
+      <ul>
+        <li><a href="reader.html?book=МОЗАИКА БУКВ&section=1 КАЛЕНДАРЬ">1. КАЛЕНДАРЬ</a></li>
+        <li><a href="reader.html?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ">2. МОЗАИКА БУКВ</a></li>
+        <li><a href="reader.html?book=МОЗАИКА БУКВ&section=3 СЕГОДНЯ БЫЛА ВОЙНА">3. СЕГОДНЯ БЫЛА ВОЙНА</a></li>
+      </ul>
     </div>
 
-    <div class="section">
-      <h3>2. МОЗАИКА БУКВ</h3>
-      <img src="Изображения/mosaic-illustration.jpg" alt="Иллюстрация к разделу МОЗАИКА БУКВ" style="max-width:100%; border-radius:6px;">
-      <p>Фрагменты внутреннего мира, голос автора, игра с формой и смыслом. Здесь буквы складываются в образы, а образы — в чувства.</p>
-      <a href="reader.html?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ">Читать раздел</a>
+    <div class="collection">
+      <h3>Женщина с прошлым</h3>
+      <p>Лирика, память, голос, который не боится быть услышанным.</p>
+      <ul>
+        <li><a href="reader.html?book=ЖЕНЩИНА С ПРОШЛЫМ&section=ГОЛОС">ГОЛОС</a></li>
+      </ul>
     </div>
 
-    <div class="section">
-      <h3>3. СЕГОДНЯ БЫЛА ВОЙНА</h3>
-      <img src="Изображения/war-illustration.jpg" alt="Иллюстрация к разделу СЕГОДНЯ БЫЛА ВОЙНА" style="max-width:100%; border-radius:6px;">
-      <p>Тексты, в которых звучит тревога, боль и попытка осмысления. Поэзия как свидетельство, как голос, как память.</p>
-      <a href="reader.html?book=МОЗАИКА БУКВ&section=3 СЕГОДНЯ БЫЛА ВОЙНА">Читать раздел</a>
+    <div class="collection">
+      <h3>Третий сборник (в печати)</h3>
+      <p>Скоро появится. Название в процессе, но тексты уже живут своей жизнью.</p>
+      <p><em>Предпросмотр будет доступен позже</em></p>
+    </div>
+
+    <div class="collection">
+      <h3>Четвёртая книга (в разработке)</h3>
+      <p>Публикуется поэтапно. Здесь будут появляться главы, пока не соберётся полное издание.</p>
+      <p><em>Чтение будет доступно по мере публикации</em></p>
+    </div>
+
+    <div class="collection">
+      <h3>Стихи друзей</h3>
+      <p>Площадка для поэтических голосов, которым ты даёшь пространство. Здесь будут публиковаться тексты твоих друзей.</p>
+      <p><em>Раздел в разработке</em></p>
     </div>
   </main>
 
@@ -50,4 +112,3 @@
     <p>&copy; 2025 Мадам Шапокляк — ТС Старый чемоданчик</p>
   </footer>
 </body>
-</html>
