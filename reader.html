@@ -29,8 +29,8 @@
     const book = params.get("book")?.trim();
     const section = params.get("section")?.trim();
 
-    console.log("book:", book);
-    console.log("section:", section);
+   console.log("book:", book ?? "не передан");
+   console.log("section:", section ?? "не передан");
     
 if (!book || !section) {
   document.body.innerHTML = `<p style="padding:40px;">Пожалуйста, выберите сборник и раздел в URL.<br><br>
