@@ -31,7 +31,13 @@
 
     console.log("book:", book);
     console.log("section:", section);
-
+    
+if (!book || !section) {
+  document.body.innerHTML = `<p style="padding:40px;">Пожалуйста, выберите сборник и раздел в URL.<br><br>
+  Пример: <code>?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ</code></p>`;
+  return;
+}
+    
     fetch("library.json")
       .then(res => res.json())
       .then(library => {
