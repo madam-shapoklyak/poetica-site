@@ -16,6 +16,7 @@
     .section-image { max-width: 80%; margin-bottom: 20px; border-radius: 6px; }
     audio, video { width: 100%; margin-bottom: 20px; }
     .placeholder { color: #999; font-style: italic; }
+    pre { white-space: pre-wrap; text-align: left; }
   </style>
 </head>
 <body>
@@ -29,29 +30,14 @@
     const book = params.get("book")?.trim();
     const section = params.get("section")?.trim();
 
-    console.log("book:", book ?? "не передан");
-    console.log("section:", section ?? "не передан");
-
     if (!book || !section) {
       document.body.innerHTML = `<p style="padding:40px;">Пожалуйста, выберите сборник и раздел в URL.<br><br>
-      Пример: <code>?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ</code></p>`;
+      Пример: <code>?book=МОЗАИКА БУКВ&section=3 СЕГОДНЯ БЫЛА ВОЙНА</code></p>`;
     } else {
       fetch("library.json")
         .then(res => res.json())
         .then(library => {
-          console.log("library keys:", Object.keys(library));
-          console.log("sections in book:", Object.keys((library[book] && library[book].sections) || {}));
-
-          let docPath = null;
-          for (const key of Object.keys((library[book] && library[book].sections) || {})) {
-            if (key.trim() === section) {
-              docPath = library[book].sections[key];
-              break;
-            }
-          }
-
-          console.log("docPath:", docPath);
-
+          const docPath = library[book]?.sections?.[section];
           if (!docPath) {
             document.body.innerHTML = `<p style="padding:40px;">Раздел "${section}" не найден в сборнике "${book}".</p>`;
             return;
@@ -59,13 +45,7 @@
 
           fetch(docPath)
             .then(response => response.arrayBuffer())
-            .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }, {
-              styleMap: [
-                "heading 1 => h1",
-                "heading 2 => h2",
-                "heading 3 => h3"
-              ]
-            }))
+            .then(arrayBuffer => mammoth.extractRawText({ arrayBuffer }))
             .then(result => {
               const blocks = result.value.split("***").map(b => b.trim()).filter(b => b.length > 0);
 
@@ -76,7 +56,7 @@
                 <img src="${coverPath}" style="width:100%; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
                 <h2>${section}</h2>
                 <ul class="poem-list">
-                  ${blocks.map((b, i) => `<li onclick="showPoem(${i})">${extractTitleFromBlock(b)}</li>`).join("")}
+                  ${blocks.map((b, i) => `<li onclick="showPoem(${i})">${extractTitle(b)}</li>`).join("")}
                 </ul>
               `;
 
@@ -91,24 +71,18 @@
               `;
 
               window.showPoem = function(index) {
-                const blockHtml = blocks[index];
-                const title = extractTitleFromBlock(blockHtml);
-                document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><div>${blockHtml}</div>`;
+                const poemText = blocks[index];
+                const title = extractTitle(poemText);
+                document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><pre>${poemText}</pre>`;
 
                 const mediaTitle = normalizeTitle(title);
                 checkMedia(`audio/${mediaTitle}.mp3`, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
                 checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
               };
 
-              function extractTitleFromBlock(blockHtml) {
-                const temp = document.createElement("div");
-                temp.innerHTML = blockHtml;
-
-                const heading = temp.querySelector("h1,h2,h3");
-                if (heading) return heading.textContent.trim();
-
-                const firstLine = temp.textContent.split("\n").find(line => line.trim().length > 0);
-                return firstLine?.trim() || "Без названия";
+              function extractTitle(text) {
+                const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+                return lines[0] || "Без названия";
               }
 
               function normalizeTitle(title) {
