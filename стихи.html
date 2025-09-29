@@ -102,6 +102,7 @@
     <h2>Поэтические сборники</h2>
     <p>Здесь публикуются авторские книги, черновики, поэтапные издания и тексты друзей. Каждая строка — часть живой мозаики.</p>
 
+    <!-- Ручные блоки -->
     <div class="collection">
       <img src="images/mosaic-cover.jpg" alt="Обложка Мозаика букв" class="cover">
       <div class="text-block">
@@ -116,48 +117,14 @@
       </div>
     </div>
 
-    <div class="collection">
-      <img src="images/woman-cover.jpg" alt="Обложка Женщина с прошлым" class="cover">
-      <div class="text-block">
-        <h3>Женщина с прошлым</h3>
-        <p>Лирика, память, голос, который не боится быть услышанным.</p>
-        <blockquote>«Я не боюсь быть услышанной. Я боюсь быть забытой.»</blockquote>
-        <ul>
-          <li><a href="reader.html?book=ЖЕНЩИНА С ПРОШЛЫМ&section=ГОЛОС">ГОЛОС</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="collection">
-      <img src="images/placeholder.jpg" alt="Обложка третьего сборника" class="cover">
-      <div class="text-block">
-        <h3>Третий сборник (в печати)</h3>
-        <p><em>Скоро появится. Название в процессе, но тексты уже живут своей жизнью.</em></p>
-      </div>
-    </div>
-
-    <div class="collection">
-      <img src="images/placeholder.jpg" alt="Обложка четвёртой книги" class="cover">
-      <div class="text-block">
-        <h3>Четвёртая книга (в разработке)</h3>
-        <p><em>Публикуется поэтапно. Здесь будут появляться главы, пока не соберётся полное издание.</em></p>
-      </div>
-    </div>
-
-    <div class="collection">
-      <img src="images/friends-cover.jpg" alt="Обложка Стихи друзей" class="cover">
-      <div class="text-block">
-        <h3>Стихи друзей</h3>
-        <p>Площадка для поэтических голосов, которым ты даёшь пространство.</p>
-        <blockquote>«Каждый голос — как луч света в общей мозаике.»</blockquote>
-        <ul>
-          <li><a href="reader.html?book=СТИХИ ДРУЗЕЙ&section=ПОДБОРКА">Открыть подборку</a></li>
-        </ul>
-      </div>
-    </div>
+    <!-- Автоматически загружаемые сборники -->
+    <div id="library"></div>
   </main>
 
   <footer>
     <p>&copy; 2025 Мадам Шапокляк — ТС Старый чемоданчик</p>
   </footer>
+
+  <script src="library.js"></script>
 </body>
+</html>
