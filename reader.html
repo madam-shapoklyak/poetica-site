@@ -29,115 +29,109 @@
     const book = params.get("book")?.trim();
     const section = params.get("section")?.trim();
 
-   console.log("book:", book ?? "не передан");
-   console.log("section:", section ?? "не передан");
-    
-if (!book || !section) {
-  document.body.innerHTML = `<p style="padding:40px;">Пожалуйста, выберите сборник и раздел в URL.<br><br>
-  Пример: <code>?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ</code></p>`;
-} else {
-  fetch("library.json")
-    .then(res => res.json())
-    .then(library => {
-      // весь остальной код внутри этого блока
-    });
-}
-    
-    fetch("library.json")
-      .then(res => res.json())
-      .then(library => {
-        console.log("library keys:", Object.keys(library));
-console.log("sections in book:", Object.keys((library[book] && library[book].sections) || {}));
+    console.log("book:", book ?? "не передан");
+    console.log("section:", section ?? "не передан");
 
-let docPath = null;
-for (const key of Object.keys((library[book] && library[book].sections) || {})) {
-  console.log(`Сравнение: "${key}" === "${section}" →`, key === section);
-  if (key.trim() === section) {
-    docPath = library[book].sections[key];
-    break;
-  }
-}
+    if (!book || !section) {
+      document.body.innerHTML = `<p style="padding:40px;">Пожалуйста, выберите сборник и раздел в URL.<br><br>
+      Пример: <code>?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ</code></p>`;
+    } else {
+      fetch("library.json")
+        .then(res => res.json())
+        .then(library => {
+          console.log("library keys:", Object.keys(library));
+          console.log("sections in book:", Object.keys((library[book] && library[book].sections) || {}));
 
-        console.log("docPath:", docPath);
-
-        if (!docPath) {
-          document.body.innerHTML = `<p style="padding:40px;">Раздел "${section}" не найден в сборнике "${book}".</p>`;
-          return;
-        }
-
-        fetch(docPath)
-          .then(response => response.arrayBuffer())
-          .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
-          .then(result => {
-            const html = result.value;
-            const poems = html.split("<p>").filter(p => p.trim().length > 0);
-
-            const coverPath = `images/${book.toLowerCase().replace(/ /g,"-")}-cover.jpg`;
-            const illustrationPath = `images/${section.toLowerCase().replace(/ /g,"-")}-illustration.jpg`;
-
-            document.getElementById("sidebar").innerHTML = `
-              <img src="${coverPath}" style="width:100%; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
-              <h2>${section}</h2>
-              <ul class="poem-list">
-                ${poems.map((p, i) => `<li onclick="showPoem(${i})">${extractTitle(p)}</li>`).join("")}
-              </ul>
-            `;
-
-            document.getElementById("content").innerHTML = `
-              <img src="${illustrationPath}" class="section-image" onerror="this.style.display='none'">
-              <div id="poem-text"><p class="placeholder">Выберите стих из списка слева</p></div>
-            `;
-
-            document.getElementById("media").innerHTML = `
-              <div id="audio-block"><p class="placeholder">АУДИО ФАЙЛ ОТСУТСТВУЕТ</p></div>
-              <div id="video-block"><p class="placeholder">ВИДЕО ФАЙЛ ОТСУТСТВУЕТ</p></div>
-            `;
-
-            window.showPoem = function(index) {
-              const poemHtml = poems[index];
-              const title = normalizeTitle(extractTitle(poemHtml));
-              document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><p>${stripTags(poemHtml)}</p>`;
-
-              const audioPath = `audio/${title}.mp3`;
-              const videoPath = `video/${title}.mp4`;
-
-              checkMedia(audioPath, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
-              checkMedia(videoPath, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
-            };
-
-            function extractTitle(html) {
-              return html.replace(/<[^>]+>/g, "").split("\n")[0].trim();
+          let docPath = null;
+          for (const key of Object.keys((library[book] && library[book].sections) || {})) {
+            console.log(`Сравнение: "${key}" === "${section}" →`, key === section);
+            if (key.trim() === section) {
+              docPath = library[book].sections[key];
+              break;
             }
+          }
 
-            function normalizeTitle(title) {
-              return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
-            }
+          console.log("docPath:", docPath);
 
-            function stripTags(html) {
-              return html.replace(/<[^>]+>/g, "").trim();
-            }
+          if (!docPath) {
+            document.body.innerHTML = `<p style="padding:40px;">Раздел "${section}" не найден в сборнике "${book}".</p>`;
+            return;
+          }
 
-            function checkMedia(path, blockId, fallback, type) {
-              fetch(path).then(res => {
-                if (res.ok) {
-                  document.getElementById(blockId).innerHTML =
-                    type === "audio" ? `<audio controls src="${path}"></audio>` :
-                    `<video controls src="${path}"></video>`;
-                } else {
+          fetch(docPath)
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
+            .then(result => {
+              const html = result.value;
+              const poems = html.split("<p>").filter(p => p.trim().length > 0);
+
+              const coverPath = `images/${book.toLowerCase().replace(/ /g,"-")}-cover.jpg`;
+              const illustrationPath = `images/${section.toLowerCase().replace(/ /g,"-")}-illustration.jpg`;
+
+              document.getElementById("sidebar").innerHTML = `
+                <img src="${coverPath}" style="width:100%; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
+                <h2>${section}</h2>
+                <ul class="poem-list">
+                  ${poems.map((p, i) => `<li onclick="showPoem(${i})">${extractTitle(p)}</li>`).join("")}
+                </ul>
+              `;
+
+              document.getElementById("content").innerHTML = `
+                <img src="${illustrationPath}" class="section-image" onerror="this.style.display='none'">
+                <div id="poem-text"><p class="placeholder">Выберите стих из списка слева</p></div>
+              `;
+
+              document.getElementById("media").innerHTML = `
+                <div id="audio-block"><p class="placeholder">АУДИО ФАЙЛ ОТСУТСТВУЕТ</p></div>
+                <div id="video-block"><p class="placeholder">ВИДЕО ФАЙЛ ОТСУТСТВУЕТ</p></div>
+              `;
+
+              window.showPoem = function(index) {
+                const poemHtml = poems[index];
+                const title = normalizeTitle(extractTitle(poemHtml));
+                document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><p>${stripTags(poemHtml)}</p>`;
+
+                const audioPath = `audio/${title}.mp3`;
+                const videoPath = `video/${title}.mp4`;
+
+                checkMedia(audioPath, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
+                checkMedia(videoPath, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
+              };
+
+              function extractTitle(html) {
+                return html.replace(/<[^>]+>/g, "").split("\n")[0].trim();
+              }
+
+              function normalizeTitle(title) {
+                return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
+              }
+
+              function stripTags(html) {
+                return html.replace(/<[^>]+>/g, "").trim();
+              }
+
+              function checkMedia(path, blockId, fallback, type) {
+                fetch(path).then(res => {
+                  if (res.ok) {
+                    document.getElementById(blockId).innerHTML =
+                      type === "audio" ? `<audio controls src="${path}"></audio>` :
+                      `<video controls src="${path}"></video>`;
+                  } else {
+                    document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
+                  }
+                }).catch(() => {
                   document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
-                }
-              }).catch(() => {
-                document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
-              });
-            }
-          })
-          .catch(err => {
-            document.body.innerHTML = `<p style="padding:40px;">Ошибка загрузки файла: ${err.message}</p>`;
-          });
-      })
-      .catch(() => {
-        document.body.innerHTML = `<p style="padding:40px;">Не удалось загрузить библиотеку.</p>`;
-      });
+                });
+              }
+            })
+            .catch(err => {
+              document.body.innerHTML = `<p style="padding:40px;">Ошибка загрузки файла: ${err.message}</p>`;
+            });
+        })
+        .catch(() => {
+          document.body.innerHTML = `<p style="padding:40px;">Не удалось загрузить библиотеку.</p>`;
+        });
+    }
   </script>
 
 </body>
