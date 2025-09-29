@@ -33,23 +33,37 @@
     }
     main {
       padding: 40px 20px;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
     }
     .collection {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 40px;
       background-color: #fff8f0;
       padding: 20px;
-      margin-bottom: 40px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      align-items: flex-start;
     }
-    .collection img {
-      max-width: 100%;
+    .cover {
+      width: 200px;
       border-radius: 6px;
-      margin-bottom: 15px;
-      display: block;
+      object-fit: cover;
     }
-    .collection ul {
+    .text-block {
+      flex: 1;
+    }
+    .text-block h3 {
+      margin-top: 0;
+      color: #3e2f2b;
+    }
+    .text-block blockquote {
+      margin: 10px 0;
+      font-style: italic;
+      color: #7a5c4a;
+    }
+    .text-block ul {
       padding-left: 20px;
     }
     footer {
@@ -57,6 +71,16 @@
       text-align: center;
       padding: 20px;
       margin-top: 40px;
+    }
+    @media (max-width: 600px) {
+      .collection {
+        flex-direction: column;
+        align-items: center;
+      }
+      .cover {
+        width: 100%;
+        max-width: 300px;
+      }
     }
   </style>
 </head>
@@ -79,40 +103,57 @@
     <p>Здесь публикуются авторские книги, черновики, поэтапные издания и тексты друзей. Каждая строка — часть живой мозаики.</p>
 
     <div class="collection">
-      <h3>Мозаика букв</h3>
-      <img src="images/mosaic-cover.jpg" alt="Обложка сборника Мозаика букв">
-      <p>Поэтический дебют, где каждая буква — фрагмент внутреннего мира.</p>
-      <ul>
-        <li><a href="reader.html?book=МОЗАИКА БУКВ&section=1 КАЛЕНДАРЬ">1. КАЛЕНДАРЬ</a></li>
-        <li><a href="reader.html?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ">2. МОЗАИКА БУКВ</a></li>
-        <li><a href="reader.html?book=МОЗАИКА БУКВ&section=3 СЕГОДНЯ БЫЛА ВОЙНА">3. СЕГОДНЯ БЫЛА ВОЙНА</a></li>
-      </ul>
+      <img src="images/mosaic-cover.jpg" alt="Обложка Мозаика букв" class="cover">
+      <div class="text-block">
+        <h3>Мозаика букв</h3>
+        <p>Поэтический дебют, где каждая буква — фрагмент внутреннего мира.</p>
+        <blockquote>«Здесь строки идут как дни, а паузы — как дыхание между событиями.»</blockquote>
+        <ul>
+          <li><a href="reader.html?book=МОЗАИКА БУКВ&section=1 КАЛЕНДАРЬ">1. КАЛЕНДАРЬ</a></li>
+          <li><a href="reader.html?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ">2. МОЗАИКА БУКВ</a></li>
+          <li><a href="reader.html?book=МОЗАИКА БУКВ&section=3 СЕГОДНЯ БЫЛА ВОЙНА">3. СЕГОДНЯ БЫЛА ВОЙНА</a></li>
+        </ul>
+      </div>
     </div>
 
     <div class="collection">
-      <h3>Женщина с прошлым</h3>
-      <p>Лирика, память, голос, который не боится быть услышанным.</p>
-      <ul>
-        <li><a href="reader.html?book=ЖЕНЩИНА С ПРОШЛЫМ&section=ГОЛОС">ГОЛОС</a></li>
-      </ul>
+      <img src="images/woman-cover.jpg" alt="Обложка Женщина с прошлым" class="cover">
+      <div class="text-block">
+        <h3>Женщина с прошлым</h3>
+        <p>Лирика, память, голос, который не боится быть услышанным.</p>
+        <blockquote>«Я не боюсь быть услышанной. Я боюсь быть забытой.»</blockquote>
+        <ul>
+          <li><a href="reader.html?book=ЖЕНЩИНА С ПРОШЛЫМ&section=ГОЛОС">ГОЛОС</a></li>
+        </ul>
+      </div>
     </div>
 
     <div class="collection">
-      <h3>Третий сборник (в печати)</h3>
-      <p>Скоро появится. Название в процессе, но тексты уже живут своей жизнью.</p>
-      <p><em>Предпросмотр будет доступен позже</em></p>
+      <img src="images/placeholder.jpg" alt="Обложка третьего сборника" class="cover">
+      <div class="text-block">
+        <h3>Третий сборник (в печати)</h3>
+        <p><em>Скоро появится. Название в процессе, но тексты уже живут своей жизнью.</em></p>
+      </div>
     </div>
 
     <div class="collection">
-      <h3>Четвёртая книга (в разработке)</h3>
-      <p>Публикуется поэтапно. Здесь будут появляться главы, пока не соберётся полное издание.</p>
-      <p><em>Чтение будет доступно по мере публикации</em></p>
+      <img src="images/placeholder.jpg" alt="Обложка четвёртой книги" class="cover">
+      <div class="text-block">
+        <h3>Четвёртая книга (в разработке)</h3>
+        <p><em>Публикуется поэтапно. Здесь будут появляться главы, пока не соберётся полное издание.</em></p>
+      </div>
     </div>
 
     <div class="collection">
-      <h3>Стихи друзей</h3>
-      <p>Площадка для поэтических голосов, которым ты даёшь пространство. Здесь будут публиковаться тексты твоих друзей.</p>
-      <p><em>Раздел в разработке</em></p>
+      <img src="images/friends-cover.jpg" alt="Обложка Стихи друзей" class="cover">
+      <div class="text-block">
+        <h3>Стихи друзей</h3>
+        <p>Площадка для поэтических голосов, которым ты даёшь пространство.</p>
+        <blockquote>«Каждый голос — как луч света в общей мозаике.»</blockquote>
+        <ul>
+          <li><a href="reader.html?book=СТИХИ ДРУЗЕЙ&section=ПОДБОРКА">Открыть подборку</a></li>
+        </ul>
+      </div>
     </div>
   </main>
 
@@ -120,5 +161,3 @@
     <p>&copy; 2025 Мадам Шапокляк — ТС Старый чемоданчик</p>
   </footer>
 </body>
-</html>
-
