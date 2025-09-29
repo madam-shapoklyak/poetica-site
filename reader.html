@@ -29,32 +29,25 @@
     const book = params.get("book")?.trim();
     const section = params.get("section")?.trim();
 
-    console.log("📘 book:", book);
-    console.log("📗 section:", section);
+    console.log("book:", book);
+    console.log("section:", section);
 
     fetch("library.json")
       .then(res => res.json())
       .then(library => {
-        console.log("📚 library keys:", Object.keys(library));
-
-        if (!library[book]) {
-          document.body.innerHTML = `<p style="padding:40px;">Сборник "${book}" не найден.</p>`;
-          return;
-        }
-
-        const sectionKeys = Object.keys(library[book].sections || {});
-        console.log("📖 sections in book:", sectionKeys);
+        console.log("library keys:", Object.keys(library));
+        console.log("sections in book:", Object.keys(library[book]?.sections || {}));
 
         let docPath = null;
-        for (const key of sectionKeys) {
-          console.log(`🔍 Сравнение: "${key}" === "${section}" →`, key === section);
+        for (const key of Object.keys(library[book]?.sections || {})) {
+          console.log(`Сравнение: "${key}" === "${section}" →`, key === section);
           if (key.trim() === section) {
             docPath = library[book].sections[key];
             break;
           }
         }
 
-        console.log("📄 docPath найден:", docPath);
+        console.log("docPath:", docPath);
 
         if (!docPath) {
           document.body.innerHTML = `<p style="padding:40px;">Раздел "${section}" не найден в сборнике "${book}".</p>`;
