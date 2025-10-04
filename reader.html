@@ -158,12 +158,13 @@
                 checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
               };
 
-            function formatPoem(text) {
+           function formatPoem(text) {
   const title = extractTitle(text);
   const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
 
-  // Удаляем первую строку, только если она совпадает с заголовком
-  const bodyLines = lines[0] === title ? lines.slice(1) : lines;
+  // Проверяем: если заголовок совпадает с первой строкой и НЕ повторяется — удаляем
+  const titleCount = lines.filter(line => line === title).length;
+  const bodyLines = titleCount === 1 && lines[0] === title ? lines.slice(1) : lines;
   const body = bodyLines.join("\n");
 
   const stanzas = body
@@ -171,7 +172,7 @@
     .map(stanza => {
       const lines = stanza
         .split("\n")
-        .map(line => {
+        .map((line, i) => {
           const trimmed = line.trim();
           if (/^\/.*\/$/.test(trimmed)) {
             return `<div class="epigraph">${trimmed.slice(1, -1)}</div>`;
@@ -180,7 +181,7 @@
           } else {
             return `<div class="poem-line">${trimmed}</div>`;
           }
-        })
+            })
         .join("");
       return `<div class="stanza">${lines}</div>`;
     });
