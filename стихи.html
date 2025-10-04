@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Стихи — Poetica-сайт</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f9f4ef;
+    }
+    header {
+      background-color: #eae2d6;
+      padding: 20px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #5a3e36;
+    }
+    nav ul {
+      list-style: none;
+  padding: 0;
+  margin: 20px auto 0 auto; /* центрирует по горизонтали */
+  display: flex;
+  gap: 20px;
+  justify-content: center; /* выравнивание по центру */
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #5a3e36;
+      font-weight: bold;
+    }
+    main {
+      padding: 40px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .collection {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 40px;
+      background-color: #fff8f0;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      align-items: flex-start;
+    }
+    .cover {
+      width: 200px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+    .text-block {
+      flex: 1;
+    }
+    .text-block h3 {
+      margin-top: 0;
+      color: #3e2f2b;
+    }
+    .text-block blockquote {
+      margin: 10px 0;
+      font-style: italic;
+      color: #7a5c4a;
+    }
+    .text-block ul {
+      padding-left: 20px;
+    }
+    footer {
+      background-color: #eae2d6;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+    @media (max-width: 600px) {
+      .collection {
+        flex-direction: column;
+        align-items: center;
+      }
+      .cover {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ТВОРЧЕСКАЯ СТУДИЯ "СТАРЫЙ ЧЕМОДАНЧИК"</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">ГЛАВНАЯ</a></li>
+        <li><a href="стихи.html">СТИХИ</a></li>
+        <li><a href="проза.html">ПРОЗА</a></li>
+        <li><a href="аудио.html">АУДИО</a></li>
+        <li><a href="видео.html">ВИДЕО</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Поэтические сборники</h2>
+    <p>Здесь публикуются авторские книги, черновики, поэтапные издания и тексты друзей. Каждая строка — часть живой мозаики.</p>
+
+    <div id="library"></div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Мадам Шапокляк — ТС Старый чемоданчик</p>
+  </footer>
+
+  <script src="library.js"></script>
+</body>
+</html>
+
