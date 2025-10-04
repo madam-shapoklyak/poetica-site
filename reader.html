@@ -97,6 +97,49 @@
   </div>
 
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+    const media = document.getElementById("media");
+
+    const poemTextBlock = document.createElement("div");
+    poemTextBlock.id = "poem-text";
+    content.appendChild(poemTextBlock);
+
+    const audioBlock = document.createElement("div");
+    audioBlock.id = "audio-block";
+    media.appendChild(audioBlock);
+
+    const videoBlock = document.createElement("div");
+    videoBlock.id = "video-block";
+    media.appendChild(videoBlock);
+
+    fetch("library.json")
+      .then(res => res.json())
+      .then(data => {
+        window.blocks = data.blocks || [];
+
+        const list = document.createElement("ul");
+        list.className = "poem-list";
+
+        window.blocks.forEach((block, index) => {
+          const title = extractTitle(block);
+          const item = document.createElement("li");
+          item.textContent = title;
+          item.onclick = () => window.showPoem(index);
+          list.appendChild(item);
+        });
+
+        sidebar.appendChild(list);
+        if (window.blocks.length > 0) {
+          window.showPoem(0);
+        }
+      })
+      .catch(err => {
+        content.innerHTML = `<p style="padding:40px;">Ошибка загрузки библиотеки: ${err.message}</p>`;
+      });
+  });
+    
   window.showPoem = function(index) {
     const poemText = blocks[index];
     const title = extractTitle(poemText);
