@@ -40,8 +40,6 @@
     .section-image { max-width: 80%; margin-bottom: 20px; border-radius: 6px; }
     audio, video { width: 100%; margin-bottom: 20px; }
     .placeholder { color: #999; font-style: italic; }
-
-    /* Стихи */
     pre {
       white-space: pre-wrap;
       text-align: left;
@@ -70,7 +68,7 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      background-image: url('./Изображения/logo.png');
+      background-image: url('./images/logo.png');
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
@@ -131,11 +129,11 @@
                 "КАЛЕНДАРЬ": "calendar.jpg",
                 "СЕГОДНЯ БЫЛА ВОЙНА": "war.jpg"
               };
-              const coverPath = `Изображения/${coverMap[book] || "placeholder.jpg"}`;
-              const illustrationPath = `Изображения/${normalizeTitle(section)}-illustration.jpg`;
+              const coverPath = `images/${coverMap[book] || "placeholder.jpg"}`;
+              const illustrationPath = `images/${normalizeTitle(section)}-illustration.jpg`;
 
               document.getElementById("sidebar").innerHTML = `
-                <img src="${coverPath}" style="max-width:200px; border-radius:6px;" onerror="this.src='Изображения/placeholder.jpg'">
+                <img src="${coverPath}" style="max-width:200px; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
                 <h2>${section}</h2>
                 <ul class="poem-list">
                   ${blocks.map((b, i) => `<li onclick="showPoem(${i})">${extractTitle(b)}</li>`).join("")}
@@ -155,6 +153,7 @@
               window.showPoem = function(index) {
                 const poemText = blocks[index];
                 const title = extractTitle(poemText);
+
                 document.getElementById("poem-text").innerHTML = `
                   <div class="poem-container">
                     <div class="poem-background"></div>
@@ -190,10 +189,10 @@
                 return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
               }
 
-               function checkMedia(path, blockId, fallback, type) {
+              function checkMedia(path, blockId, fallback, type) {
                 fetch(path).then(res => {
                   if (res.ok) {
-                    document.getElementById(blockId).innerHTML =
+                   document.getElementById(blockId).innerHTML =
                       type === "audio"
                         ? `<audio controls src="${path}"></audio>`
                         : `<video controls src="${path}"></video>`;
@@ -220,6 +219,15 @@
         e.preventDefault();
       }
     });
+    window.addEventListener("resize", () => {
+  const container = document.querySelector(".poem-container");
+  const bg = container?.querySelector(".poem-background");
+  const content = container?.querySelector(".poem-content");
+  if (bg && content) {
+    bg.style.height = content.offsetHeight + "px";
+  }
+});
   </script>
 </body>
 </html>
+                                            
