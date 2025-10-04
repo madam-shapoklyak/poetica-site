@@ -190,8 +190,7 @@
                 return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
               }
 
-              function checkMedia(path, blockId, fallback, type)
-                         function checkMedia(path, blockId, fallback, type) {
+               function checkMedia(path, blockId, fallback, type) {
                 fetch(path).then(res => {
                   if (res.ok) {
                     document.getElementById(blockId).innerHTML =
