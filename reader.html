@@ -33,7 +33,7 @@
     .main { display: flex; height: calc(100vh - 120px); }
     .sidebar, .content, .media { padding: 20px; overflow-y: auto; }
     .sidebar { width: 25%; background-color: #fff8f0; border-right: 1px solid #ccc; }
-    .content { width: 50%; text-align: center; }
+    .content { width: 50%; text-align: left; }
     .media { width: 25%; background-color: #fff8f0; border-left: 1px solid #ccc; }
     .poem-list li { margin: 10px 0; cursor: pointer; color: #5a3e36; }
     .poem-list li:hover { text-decoration: underline; }
@@ -59,6 +59,20 @@
       color: #888;
       margin: 0.5em 0;
       text-align: left;
+    }
+
+    .poem-body {
+      font-size: 1.8em;
+      line-height: 0.8;
+      text-align: left;
+    }
+
+    .stanza {
+      margin-bottom: 1.2em;
+    }
+
+    .poem-line {
+      margin: 0.2em 0;
     }
   </style>
 </head>
@@ -144,17 +158,25 @@
               };
 
               function formatPoem(text) {
-                const lines = text.split("\n").map(line => {
-                  const trimmed = line.trim();
-                  if (/^\/.*\/$/.test(trimmed)) {
-                    return `<div class="epigraph">${trimmed.slice(1, -1)}</div>`;
-                  } else if (/^\(.*\)$/.test(trimmed)) {
-                    return `<div class="remark">${trimmed}</div>`;
-                  } else {
-                    return `<div>${trimmed}</div>`;
-                  }
-                });
-                return `<div style="font-size:1.8em; line-height:0.8;">${lines.join("")}</div>`;
+                const stanzas = text
+                  .split(/\n{2,}/)
+                  .map(stanza => {
+                    const lines = stanza
+                      .split("\n")
+                      .map(line => {
+                        const trimmed = line.trim();
+                        if (/^\/.*\/$/.test(trimmed)) {
+                          return `<div class="epigraph">${trimmed.slice(1, -1)}</div>`;
+                        } else if (/^\(.*\)$/.test(trimmed)) {
+                          return `<div class="remark">${trimmed}</div>`;
+                        } else {
+                          return `<div class="poem-line">${trimmed}</div>`;
+                        }
+                      })
+                      .join("");
+                    return `<div class="stanza">${lines}</div>`;
+                  });
+                return `<div class="poem-body">${stanzas.join("")}</div>`;
               }
 
               function extractTitle(text) {
@@ -167,12 +189,13 @@
                 return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
               }
 
-              function checkMedia(path, blockId, fallback, type) {
+               function checkMedia(path, blockId, fallback, type) {
                 fetch(path).then(res => {
                   if (res.ok) {
                     document.getElementById(blockId).innerHTML =
-                      type === "audio" ? `<audio controls src="${path}"></audio>` :
-                      `<video controls src="${path}"></video>`;
+                      type === "audio"
+                        ? `<audio controls src="${path}"></audio>`
+                        : `<video controls src="${path}"></video>`;
                   } else {
                     document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
                   }
@@ -180,6 +203,7 @@
                   document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
                 });
               }
+
             })
             .catch(err => {
               document.body.innerHTML = `<p style="padding:40px;">Ошибка загрузки файла: ${err.message}</p>`;
