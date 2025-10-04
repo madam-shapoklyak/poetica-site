@@ -33,19 +33,29 @@
     .main { display: flex; height: calc(100vh - 120px); }
     .sidebar, .content, .media { padding: 20px; overflow-y: auto; }
     .sidebar { width: 25%; background-color: #fff8f0; border-right: 1px solid #ccc; }
-    .content { width: 50%; text-align: center; }
+    .content { width: 50%; text-align: center; position: relative; }
     .media { width: 25%; background-color: #fff8f0; border-left: 1px solid #ccc; }
     .poem-list li { margin: 10px 0; cursor: pointer; color: #5a3e36; }
     .poem-list li:hover { text-decoration: underline; }
     .section-image { max-width: 80%; margin-bottom: 20px; border-radius: 6px; }
     audio, video { width: 100%; margin-bottom: 20px; }
     .placeholder { color: #999; font-style: italic; }
-   pre {
-  white-space: pre-wrap;
-  text-align: left;
-  font-size: 1.8em;
-  line-height: 0.8;
-}
+    pre {
+      white-space: pre-wrap;
+      text-align: left;
+      font-size: 1.8em;
+      line-height: 0.8;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    h3 {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -157,6 +167,13 @@
           document.body.innerHTML = `<p style="padding:40px;">Не удалось загрузить библиотеку.</p>`;
         });
     }
+
+    // 🔒 Защита от копирования и правого клика
+    document.addEventListener("contextmenu", e => {
+      if (e.target.closest("pre, h3")) {
+        e.preventDefault();
+      }
+    });
   </script>
 </body>
 </html>
