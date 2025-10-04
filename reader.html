@@ -158,27 +158,35 @@
                 checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
               };
 
-              function formatPoem(text) {
-                const stanzas = text
-                  .split(/\n{2,}/)
-                  .map(stanza => {
-                    const lines = stanza
-                      .split("\n")
-                      .map(line => {
-                        const trimmed = line.trim();
-                        if (/^\/.*\/$/.test(trimmed)) {
-                          return `<div class="epigraph">${trimmed.slice(1, -1)}</div>`;
-                        } else if (/^\(.*\)$/.test(trimmed)) {
-                          return `<div class="remark">${trimmed}</div>`;
-                        } else {
-                          return `<div class="poem-line">${trimmed}</div>`;
-                        }
-                      })
-                      .join("");
-                    return `<div class="stanza">${lines}</div>`;
-                  });
-                return `<div class="poem-body">${stanzas.join("")}</div>`;
-              }
+            function formatPoem(text) {
+  const title = extractTitle(text);
+  const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+
+  // Удаляем первую строку, только если она совпадает с заголовком
+  const bodyLines = lines[0] === title ? lines.slice(1) : lines;
+  const body = bodyLines.join("\n");
+
+  const stanzas = body
+    .split(/\n{2,}/)
+    .map(stanza => {
+      const lines = stanza
+        .split("\n")
+        .map(line => {
+          const trimmed = line.trim();
+          if (/^\/.*\/$/.test(trimmed)) {
+            return `<div class="epigraph">${trimmed.slice(1, -1)}</div>`;
+          } else if (/^\(.*\)$/.test(trimmed)) {
+            return `<div class="remark">${trimmed}</div>`;
+          } else {
+            return `<div class="poem-line">${trimmed}</div>`;
+          }
+        })
+        .join("");
+      return `<div class="stanza">${lines}</div>`;
+    });
+
+  return `<div class="poem-body">${stanzas.join("")}</div>`;
+}
 
               function extractTitle(text) {
                 const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
@@ -190,7 +198,7 @@
                 return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
               }
 
-               function checkMedia(path, blockId, fallback, type) {
+   function checkMedia(path, blockId, fallback, type) {
                 fetch(path).then(res => {
                   if (res.ok) {
                     document.getElementById(blockId).innerHTML =
@@ -203,13 +211,13 @@
                 }).catch(() => {
                   document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
                 });
-              }
+              } // ← здесь заканчивается checkMedia
 
-            })
+            }) // ← это правильное закрытие fetch(docPath)
             .catch(err => {
               document.body.innerHTML = `<p style="padding:40px;">Ошибка загрузки файла: ${err.message}</p>`;
             });
-        })
+        }) // ← это закрытие fetch("library.json")
         .catch(() => {
           document.body.innerHTML = `<p style="padding:40px;">Не удалось загрузить библиотеку.</p>`;
         });
