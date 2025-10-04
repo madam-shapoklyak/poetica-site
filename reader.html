@@ -40,25 +40,39 @@
     .section-image { max-width: 80%; margin-bottom: 20px; border-radius: 6px; }
     audio, video { width: 100%; margin-bottom: 20px; }
     .placeholder { color: #999; font-style: italic; }
-    pre {
-  white-space: pre-wrap;
-  text-align: left;
-  font-size: 1.8em;
-  line-height: 0.8;
-}
+
+    h3 {
+      font-size: 2em;
+      margin-bottom: 0.5em;
+      color: #3e2f2a;
+    }
+
+    .epigraph {
+      font-style: italic;
+      color: #6a4f4b;
+      margin: 1em 0;
+      text-align: center;
+    }
+
+    .remark {
+      font-size: 0.9em;
+      color: #888;
+      margin: 0.5em 0;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <h1>ТВОРЧЕСКАЯ СТУДИЯ "СТАРЫЙ ЧЕМОДАНЧИК"</h1>
-   <nav>
-  <a href="./index.html">ГЛАВНАЯ</a>
-  <a href="./стихи.html">СТИХИ</a>
-  <a href="./проза.html">ПРОЗА</a>
-  <a href="./аудио.html">АУДИО</a>
-  <a href="./видео.html">ВИДЕО</a>
-</nav>
+    <nav>
+      <a href="./index.html">ГЛАВНАЯ</a>
+      <a href="./стихи.html">СТИХИ</a>
+      <a href="./проза.html">ПРОЗА</a>
+      <a href="./аудио.html">АУДИО</a>
+      <a href="./видео.html">ВИДЕО</a>
+    </nav>
   </header>
 
   <div class="main">
@@ -121,12 +135,27 @@
               window.showPoem = function(index) {
                 const poemText = blocks[index];
                 const title = extractTitle(poemText);
-                document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><pre>${poemText}</pre>`;
+                const formatted = formatPoem(poemText);
+                document.getElementById("poem-text").innerHTML = `<h3>${title}</h3>${formatted}`;
 
                 const mediaTitle = normalizeTitle(title);
                 checkMedia(`audio/${mediaTitle}.mp3`, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
                 checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
               };
+
+              function formatPoem(text) {
+                const lines = text.split("\n").map(line => {
+                  const trimmed = line.trim();
+                  if (/^\/.*\/$/.test(trimmed)) {
+                    return `<div class="epigraph">${trimmed.slice(1, -1)}</div>`;
+                  } else if (/^\(.*\)$/.test(trimmed)) {
+                    return `<div class="remark">${trimmed}</div>`;
+                  } else {
+                    return `<div>${trimmed}</div>`;
+                  }
+                });
+                return `<div style="font-size:1.8em; line-height:0.8;">${lines.join("")}</div>`;
+              }
 
               function extractTitle(text) {
                 const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
