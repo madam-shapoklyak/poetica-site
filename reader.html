@@ -40,6 +40,8 @@
     .section-image { max-width: 80%; margin-bottom: 20px; border-radius: 6px; }
     audio, video { width: 100%; margin-bottom: 20px; }
     .placeholder { color: #999; font-style: italic; }
+
+    /* Стихи */
     pre {
       white-space: pre-wrap;
       text-align: left;
@@ -55,6 +57,32 @@
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
+    }
+
+    /* Водяной знак */
+    .poem-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .poem-background {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background-image: url('./Изображения/logo.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 0;
+      width: 80%;
+      height: 100%;
+    }
+    .poem-content {
+      position: relative;
+      z-index: 1;
     }
   </style>
 </head>
@@ -103,11 +131,11 @@
                 "КАЛЕНДАРЬ": "calendar.jpg",
                 "СЕГОДНЯ БЫЛА ВОЙНА": "war.jpg"
               };
-              const coverPath = `images/${coverMap[book] || "placeholder.jpg"}`;
-              const illustrationPath = `images/${normalizeTitle(section)}-illustration.jpg`;
+              const coverPath = `Изображения/${coverMap[book] || "placeholder.jpg"}`;
+              const illustrationPath = `Изображения/${normalizeTitle(section)}-illustration.jpg`;
 
               document.getElementById("sidebar").innerHTML = `
-                <img src="${coverPath}" style="max-width:200px; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
+                <img src="${coverPath}" style="max-width:200px; border-radius:6px;" onerror="this.src='Изображения/placeholder.jpg'">
                 <h2>${section}</h2>
                 <ul class="poem-list">
                   ${blocks.map((b, i) => `<li onclick="showPoem(${i})">${extractTitle(b)}</li>`).join("")}
@@ -127,7 +155,25 @@
               window.showPoem = function(index) {
                 const poemText = blocks[index];
                 const title = extractTitle(poemText);
-                document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><pre>${poemText}</pre>`;
+                document.getElementById("poem-text").innerHTML = `
+                  <div class="poem-container">
+                    <div class="poem-background"></div>
+                    <div class="poem-content">
+                      <h3>${title}</h3>
+                      <pre>${poemText}</pre>
+                    </div>
+                  </div>
+                `;
+
+                // Подгонка высоты водяного знака
+                setTimeout(() => {
+                  const container = document.querySelector(".poem-container");
+                  const bg = container?.querySelector(".poem-background");
+                  const content = container?.querySelector(".poem-content");
+                  if (bg && content) {
+                    bg.style.height = content.offsetHeight + "px";
+                  }
+                }, 50);
 
                 const mediaTitle = normalizeTitle(title);
                 checkMedia(`audio/${mediaTitle}.mp3`, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
@@ -144,7 +190,8 @@
                 return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
               }
 
-              function checkMedia(path, blockId, fallback, type) {
+              function checkMedia(path, blockId, fallback, type)
+                         function checkMedia(path, blockId, fallback, type) {
                 fetch(path).then(res => {
                   if (res.ok) {
                     document.getElementById(blockId).innerHTML =
