@@ -33,52 +33,22 @@
     .main { display: flex; height: calc(100vh - 120px); }
     .sidebar, .content, .media { padding: 20px; overflow-y: auto; }
     .sidebar { width: 25%; background-color: #fff8f0; border-right: 1px solid #ccc; }
-    .content { width: 50%; text-align: left; }
+    .content { width: 50%; text-align: center; }
     .media { width: 25%; background-color: #fff8f0; border-left: 1px solid #ccc; }
     .poem-list li { margin: 10px 0; cursor: pointer; color: #5a3e36; }
     .poem-list li:hover { text-decoration: underline; }
     .section-image { max-width: 80%; margin-bottom: 20px; border-radius: 6px; }
     audio, video { width: 100%; margin-bottom: 20px; }
     .placeholder { color: #999; font-style: italic; }
-
- h3 {
-  font-size: 2em;
-  margin-bottom: 0.5em;
-  color: #3e2f2a;
-  text-align: center;
-}
-
-.epigraph {
-  font-style: italic;
-  color: #6a4f4b;
-  margin: 1em 0;
-  text-align: center;
-}
-
-.remark {
-  font-size: 0.9em;
-  color: #888;
-  margin: 0.5em 0;
-  text-align: center;
-}
-
-.poem-body {
-  font-size: 1.8em;
-  line-height: 1.0;
+   pre {
+  white-space: pre-wrap;
   text-align: left;
-}
-
-.stanza {
-  margin-bottom: 1.2em;
-}
-
-.poem-line {
-  margin: 0.2em 0;
+  font-size: 1.8em;
+  line-height: 0.8;
 }
   </style>
 </head>
 <body>
-
   <header>
     <h1>ТВОРЧЕСКАЯ СТУДИЯ "СТАРЫЙ ЧЕМОДАНЧИК"</h1>
     <nav>
@@ -97,136 +67,96 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.getElementById("sidebar");
-    const content = document.getElementById("content");
-    const media = document.getElementById("media");
+    const params = new URLSearchParams(window.location.search);
+    const book = params.get("book")?.trim();
+    const section = params.get("section")?.trim();
 
-    const poemTextBlock = document.createElement("div");
-    poemTextBlock.id = "poem-text";
-    content.appendChild(poemTextBlock);
+    if (!book || !section) {
+      document.body.innerHTML = `<p style="padding:40px;">Пожалуйста, выберите сборник и раздел в URL.<br><br> Пример: <code>?book=МОЗАИКА БУКВ&section=2 МОЗАИКА БУКВ</code></p>`;
+    } else {
+      fetch("library.json")
+        .then(res => res.json())
+        .then(library => {
+          const docPath = library[book]?.sections?.[section];
+          if (!docPath) {
+            document.body.innerHTML = `<p style="padding:40px;">Раздел "${section}" не найден в сборнике "${book}".</p>`;
+            return;
+          }
 
-    const audioBlock = document.createElement("div");
-    audioBlock.id = "audio-block";
-    media.appendChild(audioBlock);
+          fetch(docPath)
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => mammoth.extractRawText({ arrayBuffer }))
+            .then(result => {
+              const blocks = result.value.split("***").map(b => b.trim()).filter(b => b.length > 0);
+              const coverMap = {
+                "МОЗАИКА БУКВ": "mozaikabukv.jpg",
+                "КАЛЕНДАРЬ": "calendar.jpg",
+                "СЕГОДНЯ БЫЛА ВОЙНА": "war.jpg"
+              };
+              const coverPath = `images/${coverMap[book] || "placeholder.jpg"}`;
+              const illustrationPath = `images/${normalizeTitle(section)}-illustration.jpg`;
 
-    const videoBlock = document.createElement("div");
-    videoBlock.id = "video-block";
-    media.appendChild(videoBlock);
+              document.getElementById("sidebar").innerHTML = `
+                <img src="${coverPath}" style="max-width:200px; border-radius:6px;" onerror="this.src='images/placeholder.jpg'">
+                <h2>${section}</h2>
+                <ul class="poem-list">
+                  ${blocks.map((b, i) => `<li onclick="showPoem(${i})">${extractTitle(b)}</li>`).join("")}
+                </ul>
+              `;
 
-    fetch("library.json")
-      .then(res => res.json())
-      .then(data => {
-        window.blocks = data.blocks || [];
+              document.getElementById("content").innerHTML = `
+                <img src="${illustrationPath}" class="section-image" onerror="this.style.display='none'">
+                <div id="poem-text"><p class="placeholder">Выберите стих из списка слева</p></div>
+              `;
 
-        const list = document.createElement("ul");
-        list.className = "poem-list";
+              document.getElementById("media").innerHTML = `
+                <div id="audio-block"><p class="placeholder">АУДИО ФАЙЛ ОТСУТСТВУЕТ</p></div>
+                <div id="video-block"><p class="placeholder">ВИДЕО ФАЙЛ ОТСУТСТВУЕТ</p></div>
+              `;
 
-        window.blocks.forEach((block, index) => {
-          const title = extractTitle(block);
-          const item = document.createElement("li");
-          item.textContent = title;
-          item.onclick = () => window.showPoem(index);
-          list.appendChild(item);
+              window.showPoem = function(index) {
+                const poemText = blocks[index];
+                const title = extractTitle(poemText);
+                document.getElementById("poem-text").innerHTML = `<h3>${title}</h3><pre>${poemText}</pre>`;
+
+                const mediaTitle = normalizeTitle(title);
+                checkMedia(`audio/${mediaTitle}.mp3`, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
+                checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
+              };
+
+              function extractTitle(text) {
+                const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+                const filtered = lines.filter(line => !/^\/.*\/$/.test(line));
+                return filtered[0] || "Без названия";
+              }
+
+              function normalizeTitle(title) {
+                return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
+              }
+
+              function checkMedia(path, blockId, fallback, type) {
+                fetch(path).then(res => {
+                  if (res.ok) {
+                    document.getElementById(blockId).innerHTML =
+                      type === "audio"
+                        ? `<audio controls src="${path}"></audio>`
+                        : `<video controls src="${path}"></video>`;
+                  } else {
+                    document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
+                  }
+                }).catch(() => {
+                  document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
+                });
+              }
+            })
+            .catch(err => {
+              document.body.innerHTML = `<p style="padding:40px;">Ошибка загрузки файла: ${err.message}</p>`;
+            });
+        })
+        .catch(() => {
+          document.body.innerHTML = `<p style="padding:40px;">Не удалось загрузить библиотеку.</p>`;
         });
-
-        sidebar.appendChild(list);
-        if (window.blocks.length > 0) {
-          window.showPoem(0);
-        }
-      })
-      .catch(err => {
-        content.innerHTML = `<p style="padding:40px;">Ошибка загрузки библиотеки: ${err.message}</p>`;
-      });
-  });
-    
-  window.showPoem = function(index) {
-    const poemText = blocks[index];
-    const title = extractTitle(poemText);
-    const formatted = formatPoem(poemText);
-    document.getElementById("poem-text").innerHTML = `<h3>${title}</h3>${formatted}`;
-
-    const mediaTitle = normalizeTitle(title);
-    checkMedia(`audio/${mediaTitle}.mp3`, "audio-block", "АУДИО ФАЙЛ ОТСУТСТВУЕТ", "audio");
-    checkMedia(`video/${mediaTitle}.mp4`, "video-block", "ВИДЕО ФАЙЛ ОТСУТСТВУЕТ", "video");
-  };
-
-  function extractTitle(text) {
-    const parts = text.split("***");
-    const block = parts[1] || text;
-    const lines = block.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-
-    for (let line of lines) {
-      if (!/^\/.*\/$/.test(line) && !/^\(.*\)$/.test(line)) {
-        return line;
-      }
     }
-
-    return "Без названия";
-  }
-
-  function formatPoem(text) {
-    const parts = text.split("***");
-    const block = parts[1] || text;
-    const title = extractTitle(text);
-
-    const lines = block.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-
-    // Удаляем заголовок и пояснения (эпиграфы/ремарки) в начале
-    let bodyStartIndex = 0;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line === title || /^\/.*\/$/.test(line) || /^\(.*\)$/.test(line)) {
-        bodyStartIndex = i + 1;
-      } else {
-        break;
-      }
-    }
-
-    const bodyLines = lines.slice(bodyStartIndex);
-    const body = bodyLines.join("\n");
-
-    const stanzas = body
-      .split(/\n{2,}/)
-      .map(stanza => {
-        const lines = stanza
-          .split("\n")
-          .map(line => {
-            const trimmed = line.trim();
-            if (/^\/.*\/$/.test(trimmed)) {
-              return `<div class="epigraph">${trimmed.slice(1, -1)}</div>`;
-            } else if (/^\(.*\)$/.test(trimmed)) {
-              return `<div class="remark">${trimmed}</div>`;
-            } else {
-              return `<div class="poem-line">${trimmed}</div>`;
-            }
-          })
-          .join("");
-        return `<div class="stanza">${lines}</div>`;
-      });
-
-    return `<div class="poem-body">${stanzas.join("")}</div>`;
-  }
-
-  function normalizeTitle(title) {
-    return title.toLowerCase().replace(/[^а-яa-z0-9]/gi, "-");
-  }
-
-  function checkMedia(path, blockId, fallback, type) {
-    fetch(path).then(res => {
-      if (res.ok) {
-        document.getElementById(blockId).innerHTML =
-          type === "audio"
-            ? `<audio controls src="${path}"></audio>`
-            : `<video controls src="${path}"></video>`;
-      } else {
-        document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
-      }
-    }).catch(() => {
-      document.getElementById(blockId).innerHTML = `<p class="placeholder">${fallback}</p>`;
-    });
-  }
-</script>
-
+  </script>
 </body>
 </html>
